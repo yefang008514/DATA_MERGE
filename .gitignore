@@ -2,13 +2,10 @@
 
 DATA/
 
-
 #忽略 原始网银流水/
 原始网银流水/
 
-
 build/
-
 
 dist/
 
@@ -18,9 +15,11 @@ dist/
 
 网银流水合并整理工具.rar
 
+test.ipynb
 
 SACP工具/
 
+debug.py
 
 整理后银行流水_auto/
 
