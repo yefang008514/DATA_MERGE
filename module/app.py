@@ -280,11 +280,20 @@ if __name__ == "__main__":
 
     st.title("文件合并工具")
 
+
     # 用户选择文件夹路径
     folder_path = st.text_input("选择包含待处理文件的文件夹路径:")
 
     # 用户上传配置文件
     config_file = st.file_uploader("上传配置映射表:", type=['xlsx','xlsm'])
+
+    st.markdown(
+    '''
+    copyright
+    © [20250106] [立信会计师事务所浙江分所 21部]。保留所有权利。
+
+    使用本工具遇到任何问题，请联系：[yefang@bdo.com.cn]
+    ''')
 
     # 开始处理按钮
     if st.button("开始处理"):
