@@ -57,7 +57,13 @@ def clean_df(data,config_dict):
     flag_col=final_dict['标识列']
     income_col=final_dict['收入标识']
     expense_col=final_dict['支出标识']
+
+    acct_col=final_dict['户名']
+    in_acct_col=final_dict['收款人户名']
+    ex_acct_col=final_dict['付款人户名']
+
     flag_amount_col=pd.isna(amount_col) #判断金额列是否为空
+
 
     #3.处理收入支出通过标识区分的情况
     if (flag_amount_col==False) and (flag_col=='无'): #无标识按正负区分
@@ -79,8 +85,19 @@ def clean_df(data,config_dict):
     else:
         pass 
 
+    #4.处理【对方户名】需要通过标识区分的情况，如果是收款，对方户名就是付款人
+    if acct_col=='无' or pd.isna(final_dict['户名']):
+        if flag_col=='无':
+            df['户名']=df.apply(lambda x:x[ex_acct_col] if x[amount_col]>0 else x[in_acct_col],axis=1)
+            final_dict['户名']='户名'    
+        elif flag_col!='无':
+            df['户名']=df.apply(lambda x:x[ex_acct_col] if x[flag_col]==income_col else x[in_acct_col],axis=1)
+            final_dict['户名']='户名'
+        else:
+            pass
 
-    #4.仅保留需要的列
+
+    #5.仅保留需要的列
     must_col=['时间','收入','支出','余额','户名','摘要']
     col_name_list=[v for k,v in final_dict.items() if k in must_col]
     df=df[col_name_list].copy()
