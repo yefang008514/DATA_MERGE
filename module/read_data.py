@@ -61,9 +61,10 @@ def read_data_xlwings(path,sheet_name=None,header=None,auto_header=None):
     #默认自动识别表头
     if auto_header is None:
         df=process_df(data=df).copy()
-        return df
     else:
-        return df
+        pass
+    
+    return df
 
 
 ########################################读文件路径##########################################
