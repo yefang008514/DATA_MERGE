@@ -54,6 +54,7 @@ def read_data_xlwings(path,sheet_name=None,header=None,auto_header=None):
         book=app.books.open(mypath)
         if sheet_name is not None:
             table=book.sheets[sheet_name].used_range
+            df=table.options(pd.DataFrame, header=header_final, index=False).value
         else:
             table=book.sheets[0].used_range
             df=table.options(pd.DataFrame, header=header_final, index=False).value
