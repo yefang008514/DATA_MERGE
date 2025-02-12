@@ -47,12 +47,9 @@ def filter_df_by_date(data,col_name):
 def clean_df(data,config_dict):
     df=data.copy()
     final_dict=config_dict
+    raw_col=['无']+list(df.columns)
 
-    #1.通过时间频率过滤数据
-    df=filter_df_by_date(data=df,col_name=final_dict['时间']).copy()
-    
-
-    #2.判断是否有【金额列】
+    #初始化
     amount_col=final_dict['金额列']
     flag_col=final_dict['标识列']
     income_col=final_dict['收入标识']
@@ -62,6 +59,28 @@ def clean_df(data,config_dict):
     in_acct_col=final_dict['收款人户名']
     ex_acct_col=final_dict['付款人户名']
 
+    #判断final_dict里面的元素是否都在原始的datal里面
+    for k,v in final_dict.items():
+        if pd.isna(v):
+            pass
+        elif k in ['收入标识','支出标识']:
+            if flag_col not in df.columns:
+                raise ValueError(f'列[{flag_col}] 不在原始数据中，请检查配置映射表!')
+            else:
+                if income_col not in df[flag_col].unique().tolist():
+                    raise ValueError(f'标识列[{income_col}] 值不正确，请检查配置映射表!')
+                if expense_col not in df[flag_col].unique().tolist():
+                    raise ValueError(f'标识列[{expense_col}] 值不正确，请检查配置映射表!')
+        else:
+            if v not in df.columns:
+                raise ValueError(f'列[{v}] 不在原始数据中，请检查配置映射表!')
+    
+
+    #1.通过时间频率过滤数据
+    df=filter_df_by_date(data=df,col_name=final_dict['时间']).copy()
+    
+
+    #2.判断是否有【金额列】
     flag_amount_col=pd.isna(amount_col) #判断金额列是否为空
 
 
@@ -78,8 +97,15 @@ def clean_df(data,config_dict):
             df[amount_col]=df[amount_col].apply(lambda x:float(str(x).replace(',',''))).copy()
         else:
             pass
-        df['收入']=df.apply(lambda x:abs(x[amount_col]) if x[flag_col]==income_col else 0,axis=1)
-        df['支出']=df.apply(lambda x:abs(x[amount_col]) if x[flag_col]==expense_col else 0,axis=1)
+
+        # df['收入']=df.apply(lambda x:abs(x[amount_col]) if x[flag_col]==income_col else 0,axis=1)
+        # df['支出']=df.apply(lambda x:abs(x[amount_col]) if x[flag_col]==expense_col else 0,axis=1)
+
+        #替换写法 使用辅助列
+        df['income_col']=(df[flag_col]==income_col).astype(int)
+        df['expense_col']=(df[flag_col]==expense_col).astype(int)
+        df['收入']=df[amount_col]*df['income_col'].abs()
+        df['支出']=df[amount_col]*df['expense_col'].abs()
         final_dict['收入']='收入'    
         final_dict['支出']='支出'
     else:
