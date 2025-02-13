@@ -64,15 +64,17 @@ def clean_df(data,config_dict):
         if pd.isna(v):
             pass
         elif k in ['收入标识','支出标识']:
-            if flag_col not in df.columns:
+            if flag_col=='无':#如果标识列为空，则不用判断
+                pass
+            elif flag_col not in raw_col:#如果标识列不在原始数据中，则报错
                 raise ValueError(f'列[{flag_col}] 不在原始数据中，请检查配置映射表!')
-            else:
+            else:#检查标识列是否有收入和支出标识
                 if income_col not in df[flag_col].unique().tolist():
                     raise ValueError(f'标识列[{income_col}] 值不正确，请检查配置映射表!')
                 if expense_col not in df[flag_col].unique().tolist():
                     raise ValueError(f'标识列[{expense_col}] 值不正确，请检查配置映射表!')
         else:
-            if v not in df.columns:
+            if v not in raw_col:
                 raise ValueError(f'列[{v}] 不在原始数据中，请检查配置映射表!')
     
 
