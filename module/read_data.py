@@ -13,7 +13,7 @@ from module.clean_data import clean_df,process_df
 def read_config_map(config_path):
     df = pd.read_excel(config_path,dtype=object,sheet_name='配置映射表')
     df = df[df['银行'].notnull()]
-    print(df)
+    # print(df)
     #去掉字符串前后的空格
     df=df.applymap(lambda x:x.strip() if isinstance(x,str) else x)
     #把映射表转换成字典
