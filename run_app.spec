@@ -31,7 +31,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='银行流水合并清洗工具_v250110',
+    name='银行流水合并清洗工具_v250221',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
