@@ -59,7 +59,7 @@ def clean_df(data,config_dict):
     in_acct_col=final_dict['收款人户名']
     ex_acct_col=final_dict['付款人户名']
 
-    #判断final_dict里面的元素是否都在原始的datal里面
+    #判断final_dict里面的元素是否都在原始的data里面
     for k,v in final_dict.items():
         if pd.isna(v):
             pass
